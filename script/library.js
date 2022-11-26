@@ -83,8 +83,19 @@ function showBooksInLibrary() {
 
 function addBookToLibrary(title, author, pages, status) {
     const book = new Book(title, author, pages, status);
-    myLibrary.push(book);
-    UI.showAlert('Book Added','success');
+    let matches = 0;
+    for (let i = 0; i < myLibrary.length; i++) {
+        let libraryBook = myLibrary[i];
+        if (book.title === libraryBook.title && book.author === libraryBook.author ) {
+            matches += 1;
+        }    
+    }
+    if (matches > 0) {
+        UI.showAlert('Book is in the library', 'delete')
+    } else {
+        myLibrary.push(book);
+        UI.showAlert('Book Added', 'success');
+    }
     showBooksInLibrary();
 }
 
@@ -133,7 +144,7 @@ function listenClicks() {
             validateForm(event);
         } else if (target.classList.contains('fa-trash')) {
             myLibrary.splice(tr, 1);
-            UI.showAlert('Book Deleted','delete')
+            UI.showAlert('Book Deleted', 'delete')
         } else if (target.classList.contains('fa-check')) {
             target.classList.remove('fa-check');
             target.classList.add('fa-times');
@@ -147,14 +158,14 @@ function listenClicks() {
     });
 }
 class UI {
-    static showAlert(message, className){
+    static showAlert(message, className) {
         const div = document.createElement('div');
         div.className = `msg msg-${className}`;
         div.appendChild(document.createTextNode(message));
         const container = document.querySelector('.banner-middle');
         const form = document.querySelector('#msg-text');
         container.insertBefore(div, form);
-    
+
         //Vanish in 3 Seconds
         setTimeout(() => {
             document.querySelector('.msg').remove()
